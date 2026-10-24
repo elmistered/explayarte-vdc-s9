@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesión 9 | Cómo pedir apoyo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* SISTEMA DE DISEÑO VDC. Tokens fijados en Sesión 1, idénticos. */
+:root {
+  --bone: #F6F4EF; --paper: #FCFBF8; --ink: #1B1E2B; --ink-soft: #3A3E4D;
+  --mid: #7A7D89; --line: #E2DDD2;
+  --indigo: #3B4C8A; --indigo-deep: #2C3A6B; --coral: #E0674F; --sage: #6E8B6A; --gold: #C6A15B;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--ink); font-family: var(--sans); overflow: hidden; }
+.deck { width: 100%; height: 100vh; position: relative; }
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bone); overflow: hidden; }
+.slide.active { display: flex; }
+.weave { position: absolute; inset: 0; pointer-events: none; opacity: 0.5; z-index: 0; }
+
+/* Navegación */
+.progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--indigo); transition: width 0.4s ease; z-index: 100; }
+.counter { position: fixed; bottom: 16px; right: 22px; font-size: 15px; font-weight: 600; letter-spacing: 0.12em; color: var(--mid); z-index: 100; }
+.nav { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+.nav button { background: var(--paper); border: 1px solid var(--line); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--ink-soft); font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.nav button:hover, .nav button:focus-visible { background: var(--indigo); color: #fff; border-color: var(--indigo); outline: none; }
+
+/* Header */
+.slide-header { position: relative; z-index: 2; display: flex; align-items: flex-start; justify-content: space-between; padding: 32px 56px 22px; background: var(--paper); border-bottom: 1px solid var(--line); flex-shrink: 0; }
+.kicker { font-size: 15px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--indigo); margin-bottom: 8px; }
+.kicker.coral { color: var(--coral); } .kicker.sage { color: var(--sage); } .kicker.gold { color: var(--gold); }
+.slide-h1 { font-family: var(--serif); font-size: 34px; font-weight: 600; color: var(--ink); line-height: 1.15; max-width: 900px; }
+.slide-num { font-family: var(--serif); font-size: 60px; font-weight: 600; color: var(--line); line-height: 1; user-select: none; flex-shrink: 0; margin-left: 24px; }
+.band { height: 6px; flex-shrink: 0; position: relative; z-index: 2; }
+.band.indigo { background: var(--indigo); } .band.coral { background: var(--coral); } .band.sage { background: var(--sage); } .band.gold { background: var(--gold); }
+
+/* Portada */
+.slide-portada { background: var(--paper); justify-content: center; padding: 72px 80px; position: relative; height: 100%; }
+.portada-rule { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, var(--indigo) 0%, var(--indigo) 40%, var(--coral) 40%, var(--coral) 65%, var(--sage) 65%, var(--sage) 85%, var(--gold) 85%); z-index: 3; }
+.portada-inner { position: relative; z-index: 2; max-width: 860px; }
+.portada-tag { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--indigo); margin-bottom: 28px; }
+.portada-title { font-family: var(--serif); font-size: 60px; font-weight: 600; color: var(--ink); line-height: 1.08; letter-spacing: -0.01em; margin-bottom: 20px; }
+.portada-sub { font-family: var(--serif); font-size: 28px; font-weight: 400; font-style: italic; color: var(--mid); margin-bottom: 40px; }
+.portada-divider { width: 64px; height: 3px; background: var(--gold); margin-bottom: 28px; }
+.portada-meta { display: flex; flex-direction: column; gap: 6px; }
+.portada-meta-line { font-size: 17px; color: var(--ink-soft); }
+.portada-meta-line strong { color: var(--ink); font-weight: 600; }
+
+/* Apertura de bloque */
+.slide-apertura { justify-content: center; align-items: center; padding: 72px; background: var(--bone); position: absolute; }
+.apertura-inner { position: relative; z-index: 2; max-width: 960px; text-align: center; }
+.apertura-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--coral); margin-bottom: 32px; }
+.apertura-label.sage { color: var(--sage); } .apertura-label.indigo { color: var(--indigo); } .apertura-label.gold { color: var(--gold); }
+.apertura-q { font-family: var(--serif); font-size: 42px; font-weight: 500; color: var(--ink); line-height: 1.32; margin-bottom: 36px; }
+.apertura-rule { width: 56px; height: 3px; background: var(--gold); margin: 0 auto 28px; }
+.apertura-note { font-size: 20px; color: var(--ink-soft); line-height: 1.5; }
+.apertura-note strong { color: var(--indigo); font-weight: 600; }
+
+/* Agenda */
+.body-pad { flex: 1; padding: 26px 56px; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; min-height: 0; }
+.agenda-list { display: flex; flex-direction: column; gap: 10px; }
+.agenda-row { display: flex; align-items: center; gap: 26px; padding: 13px 26px; background: var(--paper); border-left: 5px solid var(--line); }
+.agenda-row.indigo { border-color: var(--indigo); } .agenda-row.coral { border-color: var(--coral); } .agenda-row.sage { border-color: var(--sage); } .agenda-row.gold { border-color: var(--gold); }
+.agenda-time { font-size: 16px; font-weight: 700; letter-spacing: 0.06em; color: var(--mid); min-width: 84px; }
+.agenda-title { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.agenda-desc { font-size: 17px; color: var(--ink-soft); line-height: 1.4; }
+
+/* Concepto */
+.concepto { flex: 1; padding: 40px 56px; display: flex; gap: 44px; align-items: center; position: relative; z-index: 2; min-height: 0; }
+.concepto-left { flex: 1.4; }
+.concepto-label { font-size: 15px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--indigo); margin-bottom: 18px; }
+.concepto-label.coral { color: var(--coral); } .concepto-label.sage { color: var(--sage); } .concepto-label.gold { color: var(--gold); }
+.concepto-text { font-family: var(--serif); font-size: 27px; font-weight: 400; color: var(--ink); line-height: 1.5; margin-bottom: 26px; }
+.concepto-quote { padding: 22px 26px; background: var(--paper); border-left: 4px solid var(--gold); font-size: 20px; font-weight: 500; color: var(--ink-soft); line-height: 1.5; }
+.concepto-right { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.punto { padding: 18px 22px; background: var(--paper); border-top: 3px solid var(--indigo); }
+.punto.coral { border-color: var(--coral); } .punto.sage { border-color: var(--sage); } .punto.gold { border-color: var(--gold); }
+.punto-num { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; color: var(--indigo); margin-bottom: 6px; }
+.punto.coral .punto-num { color: var(--coral); } .punto.sage .punto-num { color: var(--sage); } .punto.gold .punto-num { color: var(--gold); }
+.punto-text { font-size: 18px; color: var(--ink-soft); line-height: 1.4; }
+
+/* Rejilla de ideas */
+.ideas { display: flex; flex-direction: column; gap: 18px; }
+.ideas.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ideas.grid.tight { gap: 10px 16px; }
+.ideas.grid.tight .idea { padding: 12px 22px; gap: 18px; align-items: center; }
+.ideas.grid.tight .idea-n { font-size: 34px; min-width: 30px; }
+.ideas.grid.tight .idea-t { font-size: 19px; margin-bottom: 2px; }
+.ideas.grid.tight .idea-d { font-size: 17px; line-height: 1.35; }
+.idea { display: flex; gap: 24px; align-items: flex-start; padding: 20px 26px; background: var(--paper); }
+.ideas.grid .idea { border-top: 3px solid var(--line); }
+.idea.coral { border-top-color: var(--coral); } .idea.sage { border-top-color: var(--sage); } .idea.indigo { border-top-color: var(--indigo); } .idea.gold { border-top-color: var(--gold); }
+.idea-n { font-family: var(--serif); font-size: 46px; font-weight: 600; color: var(--line); line-height: 0.9; min-width: 44px; }
+.idea.sage .idea-n { color: var(--sage); } .idea.gold .idea-n { color: var(--gold); }
+.idea.indigo .idea-n { color: var(--indigo); } .idea.coral .idea-n { color: var(--coral); }
+.idea-t { font-family: var(--serif); font-size: 23px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.idea-d { font-size: 18px; color: var(--ink-soft); line-height: 1.5; }
+.ideas.grid.three { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.ideas.grid.three .idea { flex-direction: column; gap: 10px; padding: 22px 24px; }
+.ideas.grid.three .idea-n { font-size: 40px; }
+
+/* Caso */
+.caso { flex: 1; padding: 36px 56px; display: flex; gap: 40px; align-items: center; position: relative; z-index: 2; min-height: 0; }
+.caso-left { flex: 1.5; }
+.caso-kicker { font-size: 15px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-bottom: 14px; }
+.caso-kicker.sage { color: var(--sage); } .caso-kicker.indigo { color: var(--indigo); } .caso-kicker.gold { color: var(--gold); }
+.caso-p { font-size: 20px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 16px; }
+.caso-q { padding: 20px 24px; background: var(--paper); border-left: 4px solid var(--coral); margin-top: 6px; }
+.caso-q.sage { border-left-color: var(--sage); } .caso-q.indigo { border-left-color: var(--indigo); } .caso-q.gold { border-left-color: var(--gold); }
+.caso-q-label { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); margin-bottom: 6px; }
+.caso-q.sage .caso-q-label { color: var(--sage); } .caso-q.indigo .caso-q-label { color: var(--indigo); } .caso-q.gold .caso-q-label { color: var(--gold); }
+.caso-q-text { font-family: var(--serif); font-size: 21px; font-style: italic; color: var(--ink); line-height: 1.45; }
+.caso-viz { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.dato { padding: 16px 20px; background: var(--paper); border-top: 3px solid var(--line); }
+.dato.coral { border-top-color: var(--coral); } .dato.sage { border-top-color: var(--sage); } .dato.indigo { border-top-color: var(--indigo); } .dato.gold { border-top-color: var(--gold); }
+.dato-label { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 5px; }
+.dato-text { font-size: 18px; color: var(--ink-soft); line-height: 1.4; }
+.dato-big { font-family: var(--serif); font-size: 40px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 6px; }
+.dato.own { border-color: var(--gold); background: linear-gradient(180deg, rgba(198,161,91,0.10), var(--paper)); }
+.dato.own .dato-label { color: var(--gold); }
+
+/* Banda oscura */
+.stat-wide { display: flex; gap: 32px; align-items: center; padding: 22px 28px; background: var(--ink); color: var(--paper); margin-top: 18px; }
+.stat-wide .stat-n { font-family: var(--serif); font-weight: 600; color: var(--coral); font-size: 40px; line-height: 1; white-space: nowrap; }
+.stat-wide .stat-l { color: #D9DAE2; font-size: 20px; line-height: 1.45; }
+.stat-wide .stat-l strong { color: var(--paper); }
+
+/* Dúo de preguntas */
+.duo { flex: 1; padding: 40px 56px 112px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: stretch; position: relative; z-index: 2; min-height: 0; }
+.duo-col { padding: 34px 34px; background: var(--paper); border-top: 4px solid var(--coral); display: flex; flex-direction: column; justify-content: center; }
+.duo-col.sage { border-top-color: var(--sage); } .duo-col.indigo { border-top-color: var(--indigo); } .duo-col.gold { border-top-color: var(--gold); }
+.duo-tag { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px; }
+.duo-q { font-family: var(--serif); font-size: 30px; font-weight: 500; color: var(--ink); line-height: 1.38; }
+.duo-foot { position: absolute; bottom: 64px; left: 56px; font-size: 18px; color: var(--ink-soft); z-index: 3; }
+.duo-foot strong { color: var(--indigo); }
+
+/* Tarea */
+.tarea { flex: 1; padding: 30px 56px; display: flex; gap: 40px; align-items: center; position: relative; z-index: 2; min-height: 0; }
+.tarea-left { flex: 1.5; display: flex; flex-direction: column; gap: 11px; }
+.tarea-intro { font-size: 20px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 4px; }
+.tarea-item { display: flex; gap: 16px; padding: 13px 20px; background: var(--paper); align-items: baseline; }
+.tarea-n { font-size: 17px; font-weight: 700; color: var(--indigo); min-width: 34px; white-space: nowrap; }
+.tarea-text { font-size: 18px; color: var(--ink-soft); line-height: 1.45; }
+.tarea-right { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.meta { padding: 16px 20px; background: var(--paper); border-top: 3px solid var(--indigo); }
+.meta-label { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 5px; }
+.meta-text { font-size: 18px; font-weight: 600; color: var(--ink-soft); }
+.spirit { padding: 18px 22px; background: linear-gradient(180deg, rgba(59,76,138,0.09), var(--paper)); border-left: 4px solid var(--indigo); }
+.spirit-label { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--indigo); margin-bottom: 6px; }
+.spirit-text { font-family: var(--serif); font-size: 19px; font-style: italic; color: var(--ink); line-height: 1.45; }
+
+/* Cierre */
+.slide-cierre { justify-content: center; align-items: center; padding: 72px; background: var(--ink); position: absolute; }
+.cierre-inner { position: relative; z-index: 2; max-width: 940px; text-align: center; }
+.cierre-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; }
+.cierre-text { font-family: var(--serif); font-size: 42px; font-weight: 500; color: var(--paper); line-height: 1.35; margin-bottom: 36px; }
+.cierre-text .hl { color: var(--coral); font-style: italic; }
+.cierre-rule { width: 56px; height: 3px; background: var(--gold); margin: 0 auto 28px; }
+.cierre-q { font-size: 21px; color: #C9CBD6; line-height: 1.5; }
+.cierre-q strong { color: var(--paper); font-weight: 600; }
+.slide-cierre .weave { opacity: 0.28; }
+
+/* Sesión 9 · componentes del taller */
+.check { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.check-item { display: flex; gap: 18px; align-items: center; padding: 22px 26px; background: var(--paper); border-left: 5px solid var(--gold); }
+.check-box { width: 30px; height: 30px; border: 3px solid var(--gold); flex-shrink: 0; }
+.check-t { font-family: var(--serif); font-size: 24px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+
+@media (max-width: 1100px) {
+  .portada-title { font-size: 48px; } .slide-h1 { font-size: 28px; } .concepto-text { font-size: 23px; }
+  .apertura-q { font-size: 34px; } .cierre-text { font-size: 32px; } .duo-q { font-size: 24px; }
+  .ideas.grid.three, .check { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 PORTADA -->
+  <section class="slide slide-portada active">
+    <div class="portada-rule"></div>
+    <svg class="weave" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g stroke="#3B4C8A" stroke-width="1.1" opacity="0.30" fill="none">
+        <line x1="1010" y1="140" x2="1150" y2="210"/><line x1="1150" y1="210" x2="1090" y2="350"/>
+        <line x1="1090" y1="350" x2="1215" y2="460"/><line x1="1010" y1="140" x2="1090" y2="350"/>
+        <line x1="1090" y1="350" x2="960" y2="470"/><line x1="960" y1="470" x2="1070" y2="600"/>
+        <line x1="1215" y1="460" x2="1070" y2="600"/><line x1="1150" y1="210" x2="1230" y2="110"/>
+        <line x1="1010" y1="140" x2="900" y2="250"/><line x1="900" y1="250" x2="960" y2="470"/>
+      </g>
+      <g fill="#3B4C8A"><circle cx="1090" cy="350" r="9"/></g>
+      <g fill="#E0674F"><circle cx="1010" cy="140" r="7"/><circle cx="1070" cy="600" r="7"/><circle cx="900" cy="250" r="5"/></g>
+      <g fill="#6E8B6A"><circle cx="1150" cy="210" r="6"/><circle cx="960" cy="470" r="6"/><circle cx="1215" cy="460" r="6"/></g>
+      <g fill="#C6A15B"><circle cx="1230" cy="110" r="5"/></g>
+    </svg>
+    <div class="portada-inner">
+      <div class="portada-tag">Vinculación y Difusión · Explayarte · Sesión 9</div>
+      <h1 class="portada-title">Cómo pedir apoyo</h1>
+      <div class="portada-sub">Patrocinios, alianzas y fondos: nadie te regala nada, pero todos buscan algo.</div>
+      <div class="portada-divider"></div>
+      <div class="portada-meta">
+        <div class="portada-meta-line"><strong>Lic. en Dirección de Empresas Culturales</strong> · Séptimo semestre</div>
+        <div class="portada-meta-line">Ed Turner · 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 AGENDA -->
+  <section class="slide">
+    <div class="slide-header">
+      <div><div class="kicker">Sesión 9</div><h2 class="slide-h1">Lo que vamos a hacer hoy</h2></div>
+      <div class="slide-num">2</div>
+    </div>
+    <div class="body-pad">
+      <div class="agenda-list">
+        <div class="agenda-row"><div class="agenda-time">5 min</div><div>
+          <div class="agenda-title">Para arrancar</div>
+          <div class="agenda-desc">Una provocación y sus experiencias pidiendo apoyo</div></div></div>
+        <div class="agenda-row indigo"><div class="agenda-time">15 min</div><div>
+          <div class="agenda-title">Bloque 1 · Quién apoya y qué busca</div>
+          <div class="agenda-desc">Marcas, instituciones y aliados. Casos: Corona Capital, Red Bull Batalla y PACMyC</div></div></div>
+        <div class="agenda-row coral"><div class="agenda-time">15 min</div><div>
+          <div class="agenda-title">Bloque 2 · La propuesta</div>
+          <div class="agenda-desc">Qué lleva y qué no. Casos: EFIARTES y Festival Hipnosis desde adentro</div></div></div>
+        <div class="agenda-row gold"><div class="agenda-time">25 min</div><div>
+          <div class="agenda-title">Taller · Pitch de 60 segundos</div>
+          <div class="agenda-desc">Practicamos en vivo lo que van a hacer en el video del Proyecto Final</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 PARA ARRANCAR -->
+  <section class="slide slide-apertura">
+    <div class="apertura-inner">
+      <div class="apertura-label indigo">Para arrancar · 5 min</div>
+      <div class="apertura-q">Nadie le da dinero a tu proyecto.<br>Se lo dan a lo que tu proyecto hace por ellos.</div>
+      <div class="apertura-rule"></div>
+      <div class="apertura-note">¿Alguna vez pediste apoyo, un descuento o un espacio? Cuéntalo en el <strong>chat de Meet</strong></div>
+    </div>
+  </section>
+
+  <!-- ===================== BLOQUE 1 · QUIÉN APOYA ===================== -->
+
+  <!-- 4 B1 APERTURA -->
+  <section class="slide slide-apertura">
+    <div class="apertura-inner">
+      <div class="apertura-label indigo">Bloque 1 · 15 min</div>
+      <div class="apertura-q">Si una marca le diera dinero a tu proyecto mañana,<br>¿qué crees que esperaría a cambio?</div>
+      <div class="apertura-rule"></div>
+      <div class="apertura-note">Una respuesta rápida en el <strong>chat</strong></div>
+    </div>
+  </section>
+
+  <!-- 5 B1 CONCEPTO -->
+  <section class="slide">
+    <div class="band indigo"></div>
+    <div class="slide-header">
+      <div><div class="kicker">Bloque 1 · Concepto</div><h2 class="slide-h1">El apoyo es un intercambio, no un favor</h2></div>
+      <div class="slide-num">5</div>
+    </div>
+    <div class="concepto">
+      <div class="concepto-left">
+        <div class="concepto-label">La idea en una frase</div>
+        <div class="concepto-text">Tu proyecto tiene algo que el otro no tiene. El otro tiene algo que a ti te falta. Pedir apoyo es proponer ese cambio.</div>
+        <div class="concepto-quote">No todo el valor es dinero. Un proyecto cultural tiene valor simbólico: prestigio, credibilidad, comunidad. (Bourdieu, 1993)</div>
+      </div>
+      <div class="concepto-right">
+        <div class="punto"><div class="punto-num">LO QUE TÚ TIENES</div><div class="punto-text">Un público, una comunidad, historias, prestigio.</div></div>
+        <div class="punto"><div class="punto-num">LO QUE EL OTRO TIENE</div><div class="punto-text">Dinero, espacio, equipo, difusión.</div></div>
+        <div class="punto gold"><div class="punto-num">EL TRATO</div><div class="punto-text">Que los dos salgan ganando. Igual que tus aliados de la Sesión 4.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 B1 TRES QUE APOYAN -->
+  <section class="slide">
+    <div class="band indigo"></div>
+    <div class="slide-header">
+      <div><div class="kicker">Bloque 1 · Concepto</div><h2 class="slide-h1">Tres que te pueden apoyar, y cada uno busca algo distinto</h2></div>
+      <div class="slide-num">6</div>
+    </div>
+    <div class="body-pad">
+      <div class="ideas grid three">
+        <div class="idea indigo"><div class="idea-n">1</div><div>
+          <div class="idea-t">Una marca</div>
+          <div class="idea-d">Llegar a un público, que su imagen se asocie con algo que la gente quiere, vender.</div></div></div>
+        <div class="idea coral"><div class="idea-n">2</div><div>
+          <div class="idea-t">Una institución o fondo</div>
+          <div class="idea-d">Cumplir su misión, generar impacto en la comunidad y poder rendir cuentas.</div></div></div>
+        <div class="idea sage"><div class="idea-n">3</div><div>
+          <div class="idea-t">Un aliado en especie</div>
+          <div class="idea-d">Un intercambio: te da espacio, equipo o servicios y tú le das visibilidad o público.</div></div></div>
+      </div>
+      <div class="stat-wide">
+        <div class="stat-n">Grados</div>
+        <div class="stat-l">Una marca puede solo <strong>poner su logo</strong>, hacer una <strong>activación</strong>, crear <strong>contenido contigo</strong> o construir <strong>su propia plataforma</strong> cultural.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 B1 CASO CORONA CAPITAL -->
+  <section class="slide">
+    <div class="band indigo"></div>
+    <div class="slide-header">
+      <div><div class="kicker">Bloque 1 · Caso</div><h2 class="slide-h1">Corona Capital: la marca llega hasta el nombre</h2></div>
+      <div class="slide-num">7</div>
+    </div>
+    <div class="caso">
+      <div class="caso-left">
+        <div class="caso-kicker indigo">OCESA · Grupo CIE · CDMX · Desde 2010</div>
+        <div class="caso-p">Lo vimos en la Sesión 2 desde la comunicación. Hoy lo vemos desde el lado de la marca.</div>
+        <div class="caso-p">Aquí la cerveza no "apoya" el festival: le pone nombre al festival y a sus escenarios. Es el patrocinio llevado al extremo.</div>
+        <div class="caso-q indigo">
+          <div class="caso-q-label">Pregunta para el grupo</div>
+          <div class="caso-q-text">¿Qué compra una marca cuando su nombre se vuelve el nombre del festival?</div>
+        </div>
+      </div>
+      <div class="caso-viz">
+        <div class="dato indigo"><div class="dato-big">2010</div><div class="dato-text">primera edición, ya con escenarios Corona y Corona Light.</div></div>
+        <div class="dato indigo"><div class="dato-label">Lo que compra</div><div class="dato-text">Visibilidad, pero sobre todo quedar pegada a una experiencia que el público ya quiere.</div></div>
+        <div class="dato"><div class="dato-label">Grado de involucramiento</div><div class="dato-text">Mucho más que un logo: la marca es parte de la identidad del proyecto.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 B1 CASO RED BULL BATALLA -->
+  <section class="slide">
+    <div class="band indigo"></div>
+    <div class="slide-header">
+      <div><div class="kicker">Bloque 1 · Caso</div><h2 class="slide-h1">Red Bull Batalla: la marca que crea su propia escena</h2></div>
+      <div class="slide-num">8</div>
+    </div>
+    <div class="caso">
+      <div class="caso-left">
+        <div class="caso-kicker indigo">Red Bull · Freestyle en español · Desde 2005</div>
+        <div class="caso-p">Red Bull no se subió a un evento de alguien más. Armó una competencia de freestyle con eliminatorias por país y una final internacional.</div>
+        <div class="caso-p">Lleva veinte años y se transmite en vivo y gratis. Muchos de sus competidores hoy son figuras de la escena.</div>
+        <div class="caso-q indigo">
+          <div class="caso-q-label">Pregunta para el grupo</div>
+          <div class="caso-q-text">¿Por qué una bebida energética invertiría veinte años en freestyle?</div>
+        </div>
+      </div>
+      <div class="caso-viz">
+        <div class="dato indigo"><div class="dato-big">2005</div><div class="dato-text">primera final internacional, en Puerto Rico.</div></div>
+        <div class="dato indigo"><div class="dato-label">Cómo se ve</div><div class="dato-text">En vivo y gratis en YouTube y Red Bull TV, sin restricción de país.</div></div>
+        <div class="dato"><div class="dato-label">El contraste</div><div class="dato-text">Corona se sube a un festival. Red Bull construye la plataforma completa.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 B1 CASO PACMYC -->
+  <section class="slide">
+    <div class="band indigo"></div>
+    <div class="slide-header">
+      <div><div class="kicker">Bloque 1 · Caso</div><h2 class="slide-h1">PACMyC: una institución no busca lo mismo que una marca</h2></div>
+      <div class="slide-num">9</div>
+    </div>
+    <div class="caso">
+      <div class="caso-left">
+        <div class="caso-kicker indigo">Secretaría de Cultura · Convocatoria 2026</div>
+        <div class="caso-p">El Programa de Apoyos a las Culturas Municipales y Comunitarias financia proyectos de comunidades, colectivos y grupos que fortalecen la cultura viva de su lugar.</div>
+        <div class="caso-p">No quiere su logo en tu flyer. Quiere ver que el proyecto le hace bien a una comunidad.</div>
+        <div class="caso-q indigo">
+          <div class="caso-q-label">Ojo</div>
+          <div class="caso-q-text">Si le mandas a una institución la misma propuesta que a una marca, pierdes.</div>
+        </div>
+      </div>
+      <div class="caso-viz">
+        <div class="dato indigo"><div class="dato-label">Cómo opera</div><div class="dato-text">Con los gobiernos estatales. Cada estado recibe y revisa sus proyectos.</div></div>
+        <div class="dato indigo"><div class="dato-label">Cerca de ustedes</div><div class="dato-text">El Instituto de la Cultura de Quintana Roo publicó la convocatoria 2026.</div></div>
+        <div class="dato"><div class="dato-label">Lo que busca</div><div class="dato-text">Impacto en la comunidad, no exposición.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 B1 DUO -->
+  <section class="slide">
+    <div class="band indigo"></div>
+    <div class="slide-header">
+      <div><div class="kicker">Bloque 1 · Para pensar</div><h2 class="slide-h1">Ahora tu proyecto</h2></div>
+      <div class="slide-num">10</div>
+    </div>
+    <div class="duo">
+      <div class="duo-col indigo"><div class="duo-tag">Pregunta 1</div><div class="duo-q">A tu Proyecto Final, ¿le conviene más una marca, una institución o un aliado en especie?</div></div>
+      <div class="duo-col indigo"><div class="duo-tag">Pregunta 2</div><div class="duo-q">¿Qué tiene tu proyecto que a ese posible aliado le falta?</div></div>
+    </div>
+    <div class="duo-foot">Contesta en el <strong>chat de Meet</strong></div>
+  </section>
+
+  <!-- ===================== BLOQUE 2 · LA PROPUESTA ===================== -->
+
+  <!-- 11 B2 APERTURA -->
+  <section class="slide slide-apertura">
+    <div class="apertura-inner">
+      <div class="apertura-label">Bloque 2 · 15 min</div>
+      <div class="apertura-q">Tienes una hoja para convencer a alguien.<br>¿Qué pones primero: lo que necesitas<br>o lo que el otro gana?</div>
+      <div class="apertura-rule"></div>
+      <div class="apertura-note">Vota en el <strong>chat</strong>: "necesito" o "gana"</div>
+    </div>
+  </section>
+
+  <!-- 12 B2 CONCEPTO -->
+  <section class="slide">
+    <div class="band coral"></div>
+    <div class="slide-header">
+      <div><div class="kicker coral">Bloque 2 · Concepto</div><h2 class="slide-h1">La propuesta habla de lo que el otro gana</h2></div>
+      <div class="slide-num">12</div>
+    </div>
+    <div class="body-pad">
+      <div class="ideas grid tight">
+        <div class="idea coral"><div class="idea-n">1</div><div><div class="idea-t">Quién eres y qué haces</div><div class="idea-d">En dos líneas. Si no se entiende rápido, no siguen leyendo.</div></div></div>
+        <div class="idea coral"><div class="idea-n">2</div><div><div class="idea-t">A quién llegas</div><div class="idea-d">Tu público, con algún dato. Sesiones 2 y 5.</div></div></div>
+        <div class="idea coral"><div class="idea-n">3</div><div><div class="idea-t">Qué le ofreces</div><div class="idea-d">Logo, activación, menciones, contenido, datos del público.</div></div></div>
+        <div class="idea coral"><div class="idea-n">4</div><div><div class="idea-t">Qué le pides</div><div class="idea-d">Algo concreto: una cantidad, algo en especie o niveles. Nunca "lo que puedan".</div></div></div>
+        <div class="idea coral"><div class="idea-n">5</div><div><div class="idea-t">Cómo le vas a reportar</div><div class="idea-d">Qué vas a medir y cuándo se lo entregas. Sesión 5.</div></div></div>
+        <div class="idea gold"><div class="idea-n">!</div><div><div class="idea-t">El error típico</div><div class="idea-d">La misma propuesta para todos. Cada una se ajusta a quien la recibe.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 B2 CASO EFIARTES -->
+  <section class="slide">
+    <div class="band coral"></div>
+    <div class="slide-header">
+      <div><div class="kicker coral">Bloque 2 · Caso</div><h2 class="slide-h1">EFIARTES: la empresa pone el dinero y Hacienda lo compensa</h2></div>
+      <div class="slide-num">13</div>
+    </div>
+    <div class="caso">
+      <div class="caso-left">
+        <div class="caso-kicker">Estímulo fiscal · Artículo 190 de la Ley del ISR</div>
+        <div class="caso-p">Una empresa aporta dinero a un proyecto de teatro, danza, artes visuales, libro o música de concierto y jazz. A cambio, obtiene un estímulo fiscal sobre su ISR.</div>
+        <div class="caso-p">Para entrar, el proyecto arma una carpeta y un comité la evalúa. Es una propuesta formal, con reglas.</div>
+        <div class="caso-q">
+          <div class="caso-q-label">Fíjate en esto</div>
+          <div class="caso-q-text">La empresa también tiene que poder justificar por qué te eligió a ti.</div>
+        </div>
+      </div>
+      <div class="caso-viz">
+        <div class="dato coral"><div class="dato-big">120</div><div class="dato-text">proyectos aprobados en la edición 2025.</div></div>
+        <div class="dato coral"><div class="dato-big">$250 mdp</div><div class="dato-text">autorizados en total ese año.</div></div>
+        <div class="dato"><div class="dato-label">Ojo</div><div class="dato-text">En música solo aplica a concierto y jazz, no a música popular.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 B2 CASO HIPNOSIS -->
+  <section class="slide">
+    <div class="band coral"></div>
+    <div class="slide-header">
+      <div><div class="kicker coral">Bloque 2 · Caso de la casa</div><h2 class="slide-h1">Festival Hipnosis: vender patrocinios desde adentro</h2></div>
+      <div class="slide-num">14</div>
+    </div>
+    <div class="caso">
+      <div class="caso-left">
+        <div class="caso-kicker">Indie Rocks · Festival Hipnosis · 2019</div>
+        <div class="caso-p">Lo vimos en la Sesión 1. Hoy lo vemos desde la mesa donde se negocia con las marcas.</div>
+        <div class="caso-p">Les cuento qué llevábamos a una propuesta, qué preguntaban las marcas y qué hacía que dijeran que sí, o que no.</div>
+        <div class="caso-q">
+          <div class="caso-q-label">Mientras escuchas</div>
+          <div class="caso-q-text">¿Cuál de los cinco puntos de la propuesta pesaba más para la marca?</div>
+        </div>
+      </div>
+      <div class="caso-viz">
+        <div class="dato own"><div class="dato-label">Lo que llevábamos</div><div class="dato-text">Lo cuento en vivo.</div></div>
+        <div class="dato own"><div class="dato-label">Lo que preguntaban</div><div class="dato-text">Lo cuento en vivo.</div></div>
+        <div class="dato own"><div class="dato-label">Lo que cerraba el trato</div><div class="dato-text">Lo cuento en vivo.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 B2 DUO -->
+  <section class="slide">
+    <div class="band coral"></div>
+    <div class="slide-header">
+      <div><div class="kicker coral">Bloque 2 · Para pensar</div><h2 class="slide-h1">Tienes un minuto</h2></div>
+      <div class="slide-num">15</div>
+    </div>
+    <div class="duo">
+      <div class="duo-col"><div class="duo-tag">Pregunta 1</div><div class="duo-q">Si Red Bull te dijera "convénceme en un minuto", ¿cuál de los cinco puntos dirías primero?</div></div>
+      <div class="duo-col"><div class="duo-tag">Pregunta 2</div><div class="duo-q">¿Y si fuera el PACMyC? ¿Cambiaría lo que dices primero?</div></div>
+    </div>
+    <div class="duo-foot">Contesta en el <strong>chat de Meet</strong></div>
+  </section>
+
+  <!-- ===================== TALLER · PITCH ===================== -->
+
+  <!-- 16 TALLER APERTURA -->
+  <section class="slide slide-apertura">
+    <div class="apertura-inner">
+      <div class="apertura-label gold">Taller · 25 min</div>
+      <div class="apertura-q">Tienes 60 segundos frente a alguien<br>que puede apoyar tu proyecto. ¿Qué le dices?</div>
+      <div class="apertura-rule"></div>
+      <div class="apertura-note">Es tu <strong>video del Proyecto Final</strong>, en versión mini</div>
+    </div>
+  </section>
+
+  <!-- 17 ESTRUCTURA DEL PITCH -->
+  <section class="slide">
+    <div class="band gold"></div>
+    <div class="slide-header">
+      <div><div class="kicker gold">Taller · La estructura</div><h2 class="slide-h1">Un pitch en cuatro pasos</h2></div>
+      <div class="slide-num">17</div>
+    </div>
+    <div class="body-pad">
+      <div class="ideas grid">
+        <div class="idea gold"><div class="idea-n">1</div><div><div class="idea-t">Qué es y para quién</div><div class="idea-d">Tu proyecto en una frase, y a quién le sirve.</div></div></div>
+        <div class="idea gold"><div class="idea-n">2</div><div><div class="idea-t">Por qué te conviene</div><div class="idea-d">Lo que gana quien te apoya. Esto es lo que más pesa.</div></div></div>
+        <div class="idea gold"><div class="idea-n">3</div><div><div class="idea-t">Qué te pido</div><div class="idea-d">Algo concreto, que se pueda decir que sí o que no.</div></div></div>
+        <div class="idea gold"><div class="idea-n">4</div><div><div class="idea-t">Cómo sabremos si funcionó</div><div class="idea-d">Uno o dos indicadores. Lo que le vas a reportar.</div></div></div>
+      </div>
+      <div class="stat-wide">
+        <div class="stat-n">5 min</div>
+        <div class="stat-l">En tu video tienes más tiempo, pero la lógica es la misma: <strong>qué es, tu estrategia, tres decisiones y cómo sabrás si funcionó.</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 DINÁMICA -->
+  <section class="slide">
+    <div class="band gold"></div>
+    <div class="slide-header">
+      <div><div class="kicker gold">Taller · Cómo le vamos a hacer</div><h2 class="slide-h1">La dinámica</h2></div>
+      <div class="slide-num">18</div>
+    </div>
+    <div class="body-pad">
+      <div class="agenda-list">
+        <div class="agenda-row gold"><div class="agenda-time">3 min</div><div>
+          <div class="agenda-title">Primero yo</div>
+          <div class="agenda-desc">Les hago un pitch de 60 segundos como ejemplo</div></div></div>
+        <div class="agenda-row gold"><div class="agenda-time">5 min</div><div>
+          <div class="agenda-title">Escriben el suyo</div>
+          <div class="agenda-desc">Para su Proyecto Final, con los cuatro pasos. Cámara encendida</div></div></div>
+        <div class="agenda-row gold"><div class="agenda-time">14 min</div><div>
+          <div class="agenda-title">Voluntarios</div>
+          <div class="agenda-desc">60 segundos cada uno y retro en vivo, mía y del chat</div></div></div>
+        <div class="agenda-row gold"><div class="agenda-time">3 min</div><div>
+          <div class="agenda-title">Cierre</div>
+          <div class="agenda-desc">Lo que nos llevamos y la tarea</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 CHECKLIST DE RETRO -->
+  <section class="slide">
+    <div class="band gold"></div>
+    <div class="slide-header">
+      <div><div class="kicker gold">Taller · Para dar retro</div><h2 class="slide-h1">Mientras escuchas, revisa cuatro cosas</h2></div>
+      <div class="slide-num">19</div>
+    </div>
+    <div class="body-pad">
+      <div class="check">
+        <div class="check-item"><div class="check-box"></div><div class="check-t">¿Se entendió qué es el proyecto?</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-t">¿Dijo qué gana el otro?</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-t">¿Dio por lo menos un dato?</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-t">¿Pidió algo concreto?</div></div>
+      </div>
+      <div class="stat-wide">
+        <div class="stat-n">Chat</div>
+        <div class="stat-l">Escribe cuál de los cuatro <strong>sí</strong> escuchaste y cuál <strong>faltó</strong>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 TAREA -->
+  <section class="slide">
+    <div class="slide-header">
+      <div><div class="kicker">Tarea</div><h2 class="slide-h1">Encuentra a tu aliado</h2></div>
+      <div class="slide-num">20</div>
+    </div>
+    <div class="tarea">
+      <div class="tarea-left">
+        <div class="tarea-intro">Un apoyo real para el proyecto de tu Proyecto Final.</div>
+        <div class="tarea-item"><div class="tarea-n">1</div><div class="tarea-text">Elige una marca, institución o fondo real que podría apoyarlo.</div></div>
+        <div class="tarea-item"><div class="tarea-n">2</div><div class="tarea-text">Investiga qué busca: a quién le habla, qué ha apoyado antes o qué pide su convocatoria.</div></div>
+        <div class="tarea-item"><div class="tarea-n">3</div><div class="tarea-text">Explica qué le ofreces a cambio y qué le pedirías, en concreto.</div></div>
+        <div class="tarea-item"><div class="tarea-n">4</div><div class="tarea-text">Escribe tu pitch de 60 segundos con los cuatro pasos.</div></div>
+      </div>
+      <div class="tarea-right">
+        <div class="meta"><div class="meta-label">Formato</div><div class="meta-text">Word o PDF · 1 a 2 cuartillas · Individual · Fuentes en APA</div></div>
+        <div class="meta"><div class="meta-label">Entrega</div><div class="meta-text">Viernes 30 de octubre, por Classroom</div></div>
+        <div class="spirit"><div class="spirit-label">El espíritu</div><div class="spirit-text">Lo importante no es encontrar al patrocinador perfecto, sino justificar con lo visto en clase por qué le conviene apoyarte.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 CIERRE -->
+  <section class="slide slide-cierre">
+    <svg class="weave" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g stroke="#C6A15B" stroke-width="1.1" opacity="0.5" fill="none">
+        <line x1="160" y1="210" x2="340" y2="320"/><line x1="340" y1="320" x2="210" y2="470"/>
+        <line x1="340" y1="320" x2="520" y2="190"/><line x1="520" y1="190" x2="700" y2="330"/>
+        <line x1="700" y1="330" x2="880" y2="220"/><line x1="880" y1="220" x2="1060" y2="370"/>
+        <line x1="700" y1="330" x2="640" y2="530"/><line x1="1060" y1="370" x2="1120" y2="570"/>
+        <line x1="210" y1="470" x2="420" y2="580"/><line x1="880" y1="220" x2="1100" y2="140"/>
+      </g>
+      <g fill="#E0674F"><circle cx="160" cy="210" r="7"/><circle cx="520" cy="190" r="7"/><circle cx="880" cy="220" r="7"/><circle cx="640" cy="530" r="6"/></g>
+      <g fill="#6E8B6A"><circle cx="340" cy="320" r="8"/><circle cx="700" cy="330" r="8"/><circle cx="1060" cy="370" r="6"/><circle cx="210" cy="470" r="6"/><circle cx="420" cy="580" r="5"/><circle cx="1120" cy="570" r="6"/></g>
+      <g fill="#C6A15B"><circle cx="1100" cy="140" r="5"/></g>
+    </svg>
+    <div class="cierre-inner">
+      <div class="cierre-label">Para cerrar</div>
+      <div class="cierre-text">En su video no están contando su proyecto. <span class="hl">Están proponiendo un trato.</span></div>
+      <div class="cierre-rule"></div>
+      <div class="cierre-q"><strong>Nos vemos el 31 de octubre:</strong> relación con medios y prensa.</div>
+    </div>
+  </section>
+
+</div>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="counter" id="counter">01 / 21</div>
+<div class="nav">
+  <button onclick="prevSlide()" aria-label="Anterior">‹</button>
+  <button onclick="nextSlide()" aria-label="Siguiente">›</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+const progressBar = document.getElementById('progressBar');
+const counter = document.getElementById('counter');
+function showSlide(index) {
+  if (index < 0) index = slides.length - 1;
+  if (index >= slides.length) index = 0;
+  slides[current].classList.remove('active');
+  current = index;
+  slides[current].classList.add('active');
+  progressBar.style.width = ((current + 1) / slides.length * 100) + '%';
+  counter.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+}
+function nextSlide() { showSlide(current + 1); }
+function prevSlide() { showSlide(current - 1); }
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+});
+showSlide(0);
+</script>
+</body>
+</html>
